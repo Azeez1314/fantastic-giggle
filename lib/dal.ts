@@ -20,7 +20,6 @@ export const getCurrentUser = cache(async () => {
     return null
   }
 
-  await mockDelay(700)
   try {
     const result = await db
       .select()
@@ -46,9 +45,8 @@ export const getUserByEmail = cache(async (email: string) => {
 })
 
 // Fetcher functions for React Query
-export async function getIssue(id: number) {
+export async function getExam(id: number) {
   try {
-    await mockDelay(700)
     const result = await db.query.exams.findFirst({
       where: eq(exams.id, id),
       with: {
@@ -62,11 +60,10 @@ export async function getIssue(id: number) {
   }
 }
 
-export async function getIssues() {
+export async function getExams() {
   'use cache'
   cacheTag('exams')
   try {
-    await mockDelay(700)
     const result = await db.query.exams.findMany({
       with: {
         user: true,

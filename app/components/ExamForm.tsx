@@ -44,7 +44,7 @@ export default function ExamForm({
       title: formData.get('title') as string,
       q1: formData.get('q1') as string,
       q2: formData.get('q2') as string,
-      q3: formData.get('q3') as string,
+      q3: formData.get('q3') as 'True' | 'False',
       q4: formData.get('q4') as string,
       q5: formData.get('q5') as string,
       status: formData.get('status') as

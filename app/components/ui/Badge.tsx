@@ -9,12 +9,12 @@ type BadgeVariant =
   | 'warning'
   | 'danger'
 type StatusType = 'backlog' | 'todo' | 'in_progress' | 'done'
-type MoodType = 'happy' | 'sad' | 'stressed' | 'calm'
+type TypeType = 'test' | 'assessment' | 'exam' 
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant
   status?: StatusType
-  mood?: MoodType
+  type?: TypeType
 }
 
 export default function Badge({
@@ -22,7 +22,7 @@ export default function Badge({
   variant = 'default',
   children,
   status,
-  mood,
+  type,
   ...props
 }: BadgeProps) {
   // Get variant based on status or priority if provided
@@ -42,16 +42,14 @@ export default function Badge({
       }
     }
 
-    if (mood) {
-      switch (mood) {
-        case 'happy':
+    if (type) {
+      switch (type) {
+        case 'test':
           return 'secondary'
-        case 'calm':
+        case 'assessment':
           return 'default'
-        case 'stressed':
+        case 'exam':
           return 'warning'
-        case 'sad':
-          return 'danger'
         default:
           return 'default'
       }
