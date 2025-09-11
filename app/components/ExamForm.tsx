@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Exam, EXAM_STATUS, EXAM_TYPE } from '@/db/schema'
+import { Exam, EXAM_STATUS, EXAM_TYPE, EXAM_ANSWERONE } from '@/db/schema'
 import Button from './ui/Button'
 import {
   Form,
@@ -43,8 +43,10 @@ export default function ExamForm({
     const data = {
       title: formData.get('title') as string,
       q1: formData.get('q1') as string,
+      answerOne: formData.get('answerOne') as | 'Allah' | 'Muhammad' | 'Adam',
       q2: formData.get('q2') as string,
-      q3: formData.get('q3') as 'True' | 'False',
+      answer: formData.get('answer') as string,
+      q3: formData.get('q3') as string,
       q4: formData.get('q4') as string,
       q5: formData.get('q5') as string,
       status: formData.get('status') as
@@ -79,6 +81,11 @@ export default function ExamForm({
       }
     }
   }, initialState)
+
+  const answerOneOptions = Object.values(EXAM_ANSWERONE).map(({ label, value }) => ({
+    label,
+    value,
+  }))
 
   const statusOptions = Object.values(EXAM_STATUS).map(({ label, value }) => ({
     label,
@@ -145,6 +152,25 @@ export default function ExamForm({
       </FormGroup>
 
       <FormGroup>
+          <FormLabel htmlFor="answerOne">Answer:</FormLabel>
+          <FormSelect
+            id="answerOne"
+            name="answerOne"
+            defaultValue={exam?.answerOne || ''}
+            options={answerOneOptions}
+            disabled={isPending}
+            required
+            aria-describedby="answerOne-error"
+            className={state?.errors?.answerOne ? 'border-red-500' : ''}
+          />
+          {state?.errors?.answerOne && (
+            <p id="answerOne-error" className="text-sm text-red-500">
+              {state.errors.answerOne[0]}
+            </p>
+          )}
+      </FormGroup>
+
+      <FormGroup>
         <FormLabel htmlFor="q2">Q2:</FormLabel>
         <FormTextarea
           id="q2"
@@ -159,6 +185,25 @@ export default function ExamForm({
         {state?.errors?.q2 && (
           <p id="q2-error" className="text-sm text-red-500">
             {state.errors.q2[0]}
+          </p>
+        )}
+      </FormGroup>
+
+      <FormGroup>
+        <FormLabel htmlFor="answer">Answer:</FormLabel>
+        <FormTextarea
+          id="answer"
+          name="answer"
+          placeholder="Type your answer..."
+          rows={2}
+          defaultValue={exam?.answer || ''}
+          disabled={isPending}
+          aria-describedby="answer-error"
+          className={state?.errors?.answer ? 'border-red-500' : ''}
+        />
+        {state?.errors?.answer && (
+          <p id="answer-error" className="text-sm text-red-500">
+            {state.errors.answer[0]}
           </p>
         )}
       </FormGroup>
@@ -183,6 +228,25 @@ export default function ExamForm({
       </FormGroup>
 
       <FormGroup>
+        <FormLabel htmlFor="answer">Answer:</FormLabel>
+        <FormTextarea
+          id="answer"
+          name="answer"
+          placeholder="Type your answer..."
+          rows={2}
+          defaultValue={exam?.answer || ''}
+          disabled={isPending}
+          aria-describedby="answer-error"
+          className={state?.errors?.answer ? 'border-red-500' : ''}
+        />
+        {state?.errors?.answer && (
+          <p id="answer-error" className="text-sm text-red-500">
+            {state.errors.answer[0]}
+          </p>
+        )}
+      </FormGroup>
+
+      <FormGroup>
         <FormLabel htmlFor="q4">Q4:</FormLabel>
         <FormTextarea
           id="q4"
@@ -202,6 +266,25 @@ export default function ExamForm({
       </FormGroup>
 
       <FormGroup>
+        <FormLabel htmlFor="answer">Answer:</FormLabel>
+        <FormTextarea
+          id="answer"
+          name="answer"
+          placeholder="Type your answer..."
+          rows={2}
+          defaultValue={exam?.answer || ''}
+          disabled={isPending}
+          aria-describedby="answer-error"
+          className={state?.errors?.answer ? 'border-red-500' : ''}
+        />
+        {state?.errors?.answer && (
+          <p id="answer-error" className="text-sm text-red-500">
+            {state.errors.answer[0]}
+          </p>
+        )}
+      </FormGroup>
+
+      <FormGroup>
         <FormLabel htmlFor="q5">Q5:</FormLabel>
         <FormTextarea
           id="q5"
@@ -216,6 +299,25 @@ export default function ExamForm({
         {state?.errors?.q5 && (
           <p id="q5-error" className="text-sm text-red-500">
             {state.errors.q5[0]}
+          </p>
+        )}
+      </FormGroup>
+
+      <FormGroup>
+        <FormLabel htmlFor="answer">Answer:</FormLabel>
+        <FormTextarea
+          id="answer"
+          name="answer"
+          placeholder="Type your answer..."
+          rows={2}
+          defaultValue={exam?.answer || ''}
+          disabled={isPending}
+          aria-describedby="answer-error"
+          className={state?.errors?.answer ? 'border-red-500' : ''}
+        />
+        {state?.errors?.answer && (
+          <p id="answer-error" className="text-sm text-red-500">
+            {state.errors.answer[0]}
           </p>
         )}
       </FormGroup>

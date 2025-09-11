@@ -13,10 +13,16 @@ const ExamSchema = z.object({
     .min(3, 'Title must be at least 3 characters')
     .max(100, 'Title must be less than 100 characters'),
   q1: z.string().min(3, 'Answer must be at least 3 characters'),
-  q2: z.string().min(10, 'Please write be at least 10 characters'),
-  q3: z.enum(['A', 'B', 'C'], {
+  answerOne: z.enum([
+    'Allah', 
+    'Muhammad', 
+    'Adam'
+  ], {
     errorMap: () => ({ message: 'Please select an option' }),
   }),
+  q2: z.string().min(10, 'Please write be at least 10 characters'),
+  answer: z.string().min(3, 'Answer must be at least 3 characters'),
+  q3: z.string().min(10, 'Please write be at least 10 characters'),
   q4: z.string().min(5, 'Code explanation must be at least 5 characters'),
   q5: z.string().min(5, 'Answer must be at least 5 characters'),
 
@@ -66,7 +72,9 @@ export async function createExam(data: ExamData): Promise<ActionResponse> {
     await db.insert(exams).values({
       title: validatedData.title,
       q1: validatedData.q1 || null,
+      answerOne: validatedData.answerOne || null,
       q2: validatedData.q2 || null,
+      answer: validatedData.answer || null,
       q3: validatedData.q3 || null,
       q4: validatedData.q4 || null,
       q5: validatedData.q5 || null,
@@ -123,14 +131,24 @@ export async function updateExam(
       updateData.title = validatedData.title
     if (validatedData.q1 !== undefined)
       updateData.q1 = validatedData.q1
+    if (validatedData.answerOne !== undefined)
+      updateData.answerOne = validatedData.answerOne
     if (validatedData.q2 !== undefined)
       updateData.q2 = validatedData.q2
+    if (validatedData.answer !== undefined)
+      updateData.answer = validatedData.answer
     if (validatedData.q3 !== undefined)
       updateData.q3 = validatedData.q3
+    if (validatedData.answer !== undefined)
+      updateData.answer = validatedData.answer
     if (validatedData.q4 !== undefined)
       updateData.q4 = validatedData.q4
+    if (validatedData.answer !== undefined)
+      updateData.answer = validatedData.answer
     if (validatedData.q5 !== undefined)
       updateData.q5 = validatedData.q5
+    if (validatedData.answer !== undefined)
+      updateData.answer = validatedData.answer
     if (validatedData.status !== undefined)
       updateData.status = validatedData.status
     if (validatedData.type !== undefined)

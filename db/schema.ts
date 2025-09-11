@@ -9,6 +9,8 @@ export const statusEnum = pgEnum('status', [
   'done',
 ])
 export const typeEnum = pgEnum('type', ['test', 'assessment', 'exam',])
+export const answerOneEnum = pgEnum('answerOne', ['', 'Allah', 'Muhammad', 'Adam',])
+
 
 // Exams table
 export const exams = pgTable('exams', {
@@ -19,7 +21,9 @@ export const exams = pgTable('exams', {
   q3: text('q3'),
   q4: text('q4'),
   q5: text('q5'),
+  answer: text('answer'),
   status: statusEnum('status').default('backlog').notNull(),
+  answerOne: answerOneEnum('answerOne').default('').notNull(),
   type: typeEnum('type').default('test').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -62,4 +66,11 @@ export const EXAM_TYPE = {
   test: { label: 'Test', value: 'test' },
   assessment: { label: 'Assessment', value: 'assessment' },
   exam: { label: 'Exam', value: 'exam' },
+}
+
+export const EXAM_ANSWERONE = {
+  pick: { label: '', value: '' },
+  allah: { label: 'Allah', value: 'allah' },
+  muhammad: { label: 'Muhammad', value: 'muhammad' },
+  adam: { label: 'Adam', value: 'adam' },
 }
