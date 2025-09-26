@@ -6,6 +6,7 @@ import { eq } from 'drizzle-orm'
 import { getCurrentUser } from '@/lib/dal'
 import { z } from 'zod'
 import { revalidateTag } from 'next/cache'
+import { examAnswerKey } from '@/lib/examAnswerKey'
 // Define Zod schema for issue validation
 const ExamSchema = z.object({
   title: z
@@ -14,17 +15,20 @@ const ExamSchema = z.object({
     .max(100, 'Title must be less than 100 characters'),
   q1: z.string().min(3, 'Answer must be at least 3 characters'),
   answerOne: z.enum([
-    'Allah', 
-    'Muhammad', 
-    'Adam'
+    'allah', 
+    'muhammad', 
+    'adam'
   ], {
     errorMap: () => ({ message: 'Please select an option' }),
   }),
   q2: z.string().min(10, 'Please write be at least 10 characters'),
   answer: z.string().min(3, 'Answer must be at least 3 characters'),
   q3: z.string().min(10, 'Please write be at least 10 characters'),
+  answerThree: z.string().min(3, 'Answer must be at least 3 characters'),
   q4: z.string().min(5, 'Code explanation must be at least 5 characters'),
+  answerFour: z.string().min(3, 'Answer must be at least 3 characters'),
   q5: z.string().min(5, 'Answer must be at least 5 characters'),
+  answerFive: z.string().min(3, 'Answer must be at least 3 characters'),
 
   status: z.enum(['backlog', 'todo', 'in_progress', 'done'], {
     errorMap: () => ({ message: 'Please select a valid status' }),
@@ -69,23 +73,49 @@ export async function createExam(data: ExamData): Promise<ActionResponse> {
 
     // Create issue with validated data
     const validatedData = validationResult.data
+
+    // === Auto Scoring ===
+    let score = 0
+    const total = 5
+
+    if (validatedData.answerOne === examAnswerKey.answerOne) 
+      score++
+    if (validatedData.answer.toLowerCase().includes(examAnswerKey.answer)) 
+      score++
+    if (validatedData.answerThree.toLowerCase().includes(examAnswerKey.answerThree)) 
+      score++
+    if (validatedData.answerFour.toLowerCase().includes(examAnswerKey.answerFour)) 
+      score++
+    if (validatedData.answerFive.toLowerCase().includes(examAnswerKey.answerFive)) 
+      score++
+
+    const percentage = (score / total) * 100
+
     await db.insert(exams).values({
       title: validatedData.title,
       q1: validatedData.q1 || null,
-      answerOne: validatedData.answerOne || null,
+      answerOne: validatedData.answerOne,
       q2: validatedData.q2 || null,
       answer: validatedData.answer || null,
       q3: validatedData.q3 || null,
+      answerThree: validatedData.answerThree || null,
       q4: validatedData.q4 || null,
+      answerFour: validatedData.answerFour || null,
       q5: validatedData.q5 || null,
+      answerFive: validatedData.answerFive || null,
       status: validatedData.status,
       type: validatedData.type,
       userId: validatedData.userId,
+      score,
+      percentage,
     })
 
     revalidateTag('exams')
 
-    return { success: true, message: 'exam created successfully' }
+    return { 
+      success: true, 
+      message: `Exam created successfully. Score: ${score}/${total} (${percentage}%)`,
+    }
   } catch (error) {
     console.error('Error creating exam:', error)
     return {

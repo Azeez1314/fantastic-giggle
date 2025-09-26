@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation'
 import Button from './ui/Button'
 import { Trash2Icon } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { deleteJournal } from '@/app/actions/journals'
+import { deleteExam } from '@/app/actions/exams'
 
-interface DeleteJournalButtonProps {
+interface DeleteExamButtonProps {
   id: number
 }
 
-export default function DeleteJournalButton({ id }: DeleteJournalButtonProps) {
+export default function DeleteExamButton({ id }: DeleteExamButtonProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [showConfirm, setShowConfirm] = useState(false)
@@ -19,18 +19,18 @@ export default function DeleteJournalButton({ id }: DeleteJournalButtonProps) {
   const handleDelete = async () => {
     startTransition(async () => {
       try {
-        const result = await deleteJournal(id)
+        const result = await deleteExam(id)
 
         if (!result.success) {
-          throw new Error(result.error || 'Failed to delete journal')
+          throw new Error(result.error || 'Failed to delete exam')
         }
 
-        toast.success('Journal deleted successfully')
+        toast.success('Exam deleted successfully')
         router.push('/dashboard')
         router.refresh()
       } catch (error) {
-        toast.error('Failed to delete journal')
-        console.error('Error deleting journal:', error)
+        toast.error('Failed to delete exam')
+        console.error('Error deleting exam:', error)
       }
     })
   }

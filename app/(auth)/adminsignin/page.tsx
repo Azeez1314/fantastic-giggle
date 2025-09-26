@@ -104,6 +104,24 @@ export default function SignInPage() {
               )}
             </FormGroup>
 
+            <FormGroup>
+              <FormLabel htmlFor="adminCode">Admin Code</FormLabel>
+              <FormInput
+                id="adminCode"
+                name="adminCode"
+                type="text"
+                placeholder='Enter admin code if registering as admin'
+                disabled={isPending}
+                aria-describedby="adminCode-error"
+                className={state?.errors?.adminCode ? 'border-red-500' : ''}
+              />
+              {state?.errors?.adminCode && (
+                <p id="adminCode-error" className="text-sm text-red-500">
+                  {state.errors.adminCode[0]}
+                </p>
+              )}
+            </FormGroup>
+
             <div>
               <Button type="submit" className="w-full" isLoading={isPending}>
                 Sign in
@@ -115,7 +133,7 @@ export default function SignInPage() {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Don&apos;t have an account?{' '}
               <Link
-                href="/signup"
+                href="/adminsignup"
                 className="font-medium text-gray-900 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100"
               >
                 Sign up

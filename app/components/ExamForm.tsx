@@ -43,12 +43,15 @@ export default function ExamForm({
     const data = {
       title: formData.get('title') as string,
       q1: formData.get('q1') as string,
-      answerOne: formData.get('answerOne') as | 'Allah' | 'Muhammad' | 'Adam',
+      answerOne: formData.get('answerOne') as 'allah' | 'muhammad' | 'adam',
       q2: formData.get('q2') as string,
       answer: formData.get('answer') as string,
       q3: formData.get('q3') as string,
+      answerThree: formData.get('answerThree') as string,
       q4: formData.get('q4') as string,
+      answerFour: formData.get('answerFour') as string,
       q5: formData.get('q5') as string,
+      answerFive: formData.get('answerFive') as string,
       status: formData.get('status') as
         | 'backlog'
         | 'todo'
@@ -228,20 +231,20 @@ export default function ExamForm({
       </FormGroup>
 
       <FormGroup>
-        <FormLabel htmlFor="answer">Answer:</FormLabel>
+        <FormLabel htmlFor="answerThree">Answer:</FormLabel>
         <FormTextarea
-          id="answer"
-          name="answer"
+          id="answerThree"
+          name="answerThree"
           placeholder="Type your answer..."
           rows={2}
-          defaultValue={exam?.answer || ''}
+          defaultValue={exam?.answerThree || ''}
           disabled={isPending}
-          aria-describedby="answer-error"
-          className={state?.errors?.answer ? 'border-red-500' : ''}
+          aria-describedby="answerThree-error"
+          className={state?.errors?.answerThree ? 'border-red-500' : ''}
         />
-        {state?.errors?.answer && (
-          <p id="answer-error" className="text-sm text-red-500">
-            {state.errors.answer[0]}
+        {state?.errors?.answerThree && (
+          <p id="answerThree-error" className="text-sm text-red-500">
+            {state.errors.answerThree[0]}
           </p>
         )}
       </FormGroup>
@@ -266,20 +269,20 @@ export default function ExamForm({
       </FormGroup>
 
       <FormGroup>
-        <FormLabel htmlFor="answer">Answer:</FormLabel>
+        <FormLabel htmlFor="answerFour">Answer:</FormLabel>
         <FormTextarea
-          id="answer"
-          name="answer"
+          id="answerFour"
+          name="answerFour"
           placeholder="Type your answer..."
           rows={2}
-          defaultValue={exam?.answer || ''}
+          defaultValue={exam?.answerFour || ''}
           disabled={isPending}
           aria-describedby="answer-error"
-          className={state?.errors?.answer ? 'border-red-500' : ''}
+          className={state?.errors?.answerFour ? 'border-red-500' : ''}
         />
-        {state?.errors?.answer && (
-          <p id="answer-error" className="text-sm text-red-500">
-            {state.errors.answer[0]}
+        {state?.errors?.answerFour && (
+          <p id="answerFour-error" className="text-sm text-red-500">
+            {state.errors.answerFour[0]}
           </p>
         )}
       </FormGroup>
@@ -304,20 +307,20 @@ export default function ExamForm({
       </FormGroup>
 
       <FormGroup>
-        <FormLabel htmlFor="answer">Answer:</FormLabel>
+        <FormLabel htmlFor="answerFive">Answer:</FormLabel>
         <FormTextarea
-          id="answer"
-          name="answer"
+          id="answerFive"
+          name="answerFive"
           placeholder="Type your answer..."
           rows={2}
-          defaultValue={exam?.answer || ''}
+          defaultValue={exam?.answerFive || ''}
           disabled={isPending}
-          aria-describedby="answer-error"
-          className={state?.errors?.answer ? 'border-red-500' : ''}
+          aria-describedby="answerFive-error"
+          className={state?.errors?.answerFive ? 'border-red-500' : ''}
         />
-        {state?.errors?.answer && (
-          <p id="answer-error" className="text-sm text-red-500">
-            {state.errors.answer[0]}
+        {state?.errors?.answerFive && (
+          <p id="answerFive-error" className="text-sm text-red-500">
+            {state.errors.answerFive[0]}
           </p>
         )}
       </FormGroup>

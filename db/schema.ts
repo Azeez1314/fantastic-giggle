@@ -1,5 +1,5 @@
 import { InferSelectModel, relations } from 'drizzle-orm'
-import { pgTable, serial, text, timestamp, pgEnum } from 'drizzle-orm/pg-core'
+import { pgTable, serial, text, timestamp, pgEnum, integer } from 'drizzle-orm/pg-core'
 
 // Enums for exam status and type
 export const statusEnum = pgEnum('status', [
@@ -9,7 +9,8 @@ export const statusEnum = pgEnum('status', [
   'done',
 ])
 export const typeEnum = pgEnum('type', ['test', 'assessment', 'exam',])
-export const answerOneEnum = pgEnum('answerOne', ['', 'Allah', 'Muhammad', 'Adam',])
+export const answerOneEnum = pgEnum('answerOne', ['', 'allah', 'muhammad', 'adam',])
+export const roleEnum = pgEnum('role', ['STUDENT', 'ADMIN',])
 
 
 // Exams table
@@ -22,12 +23,17 @@ export const exams = pgTable('exams', {
   q4: text('q4'),
   q5: text('q5'),
   answer: text('answer'),
+  answerThree: text('answerThree'),
+  answerFour: text('answerFour'),
+  answerFive: text('answerFive'),
   status: statusEnum('status').default('backlog').notNull(),
   answerOne: answerOneEnum('answerOne').default('').notNull(),
   type: typeEnum('type').default('test').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   userId: text('user_id').notNull(),
+  score: integer('score').default(0),
+  percentage: integer('percentage').default(0),
 })
 
 // Users table
@@ -35,6 +41,7 @@ export const users = pgTable('users', {
   id: text('id').primaryKey(),
   email: text('email').notNull().unique(),
   password: text('password').notNull(),
+  role: roleEnum('role').default('STUDENT').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 

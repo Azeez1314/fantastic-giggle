@@ -5,10 +5,14 @@ import { db } from '@/db'
 import { users } from '@/db/schema'
 import * as jose from 'jose'
 import { cache } from 'react'
+import { eq } from 'drizzle-orm'
+
 
 // JWT types
 interface JWTPayload {
   userId: string
+  email?: string
+  role?: string
   [key: string]: string | number | boolean | null | undefined
 }
 
@@ -33,8 +37,8 @@ export async function verifyPassword(password: string, hashedPassword: string) {
   return compare(password, hashedPassword)
 }
 
-// Create a new user
-export async function createUser(email: string, password: string) {
+// Create a new user (with role)
+export async function createUser(email: string, password: string, role: 'STUDENT' | 'ADMIN' = 'STUDENT') {
   const hashedPassword = await hashPassword(password)
   const id = nanoid()
 
@@ -43,9 +47,10 @@ export async function createUser(email: string, password: string) {
       id,
       email,
       password: hashedPassword,
+      role,
     })
 
-    return { id, email }
+    return { id, email, role }
   } catch (error) {
     console.error('Error creating user:', error)
     return null
@@ -116,6 +121,37 @@ export async function createSession(userId: string) {
   }
 }
 
+// Verify current session and fetch full user
+export async function verifySession() {
+  try {
+    const cookieStore = await cookies()
+    const token = cookieStore.get('auth_token')?.value
+
+    if (!token) return null
+
+    const payload = await verifyJWT(token)
+    if (!payload?.userId) return null
+
+    // Lookup user in DB to ensure they still exist
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, payload.userId))
+      .limit(1)
+
+    if (!user) return null
+
+    return {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    }
+  } catch (error) {
+    console.error('Error verifying session:', error)
+    return null
+  }
+}
+
 // Get current session from JWT
 export const getSession = cache(async () => {
   try {
@@ -148,3 +184,5 @@ export async function deleteSession() {
   const cookieStore = await cookies()
   cookieStore.delete('auth_token')
 }
+
+

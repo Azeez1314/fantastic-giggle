@@ -12,7 +12,7 @@ import {
 } from '@/app/components/ui/Form'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
-import { signIn, ActionResponse } from '@/app/actions/auth'
+import { signUp, ActionResponse } from '@/app/actions/auth'
 
 const initialState: ActionResponse = {
   success: false,
@@ -20,7 +20,7 @@ const initialState: ActionResponse = {
   errors: undefined,
 }
 
-export default function SignInPage() {
+export default function SignUpPage() {
   const router = useRouter()
 
   // Use useActionState hook for the form submission action
@@ -29,13 +29,12 @@ export default function SignInPage() {
     FormData
   >(async (prevState: ActionResponse, formData: FormData) => {
     try {
-      const result = await signIn(formData)
+      const result = await signUp(formData)
 
       // Handle successful submission
       if (result.success) {
-        toast.success('Signed in successfully')
+        toast.success('Account created successfully')
         router.push('/dashboard')
-        router.refresh()
       }
 
       return result
@@ -55,7 +54,7 @@ export default function SignInPage() {
           Insight
         </h1>
         <h2 className="mt-2 text-center text-2xl font-bold text-gray-900 dark:text-white">
-          Sign in to your account
+          Create a new account
         </h2>
       </div>
 
@@ -91,7 +90,7 @@ export default function SignInPage() {
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="current-password"
+                autoComplete="new-password"
                 required
                 disabled={isPending}
                 aria-describedby="password-error"
@@ -104,21 +103,60 @@ export default function SignInPage() {
               )}
             </FormGroup>
 
+            <FormGroup>
+              <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
+              <FormInput
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                required
+                disabled={isPending}
+                aria-describedby="confirmPassword-error"
+                className={
+                  state?.errors?.confirmPassword ? 'border-red-500' : ''
+                }
+              />
+              {state?.errors?.confirmPassword && (
+                <p id="confirmPassword-error" className="text-sm text-red-500">
+                  {state.errors.confirmPassword[0]}
+                </p>
+              )}
+            </FormGroup>
+
+            <FormGroup>
+              <FormLabel htmlFor="adminCode">Admin Code</FormLabel>
+              <FormInput
+                id="adminCode"
+                name="adminCode"
+                type="text"
+                placeholder='Enter admin code if registering as admin'
+                disabled={isPending}
+                aria-describedby="adminCode-error"
+                className={state?.errors?.adminCode ? 'border-red-500' : ''}
+              />
+              {state?.errors?.adminCode && (
+                <p id="adminCode-error" className="text-sm text-red-500">
+                  {state.errors.adminCode[0]}
+                </p>
+              )}
+            </FormGroup>
+
             <div>
               <Button type="submit" className="w-full" isLoading={isPending}>
-                Sign in
+                Sign up
               </Button>
             </div>
           </Form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Don&apos;t have an account?{' '}
+              Already have an account?{' '}
               <Link
-                href="/signup"
+                href="/adminsignin"
                 className="font-medium text-gray-900 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100"
               >
-                Sign up
+                Sign in
               </Link>
             </p>
           </div>

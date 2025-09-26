@@ -7,22 +7,14 @@ import { formatRelativeTime } from '@/lib/utils'
 import { Type, Status } from '@/lib/types'
 import { EXAM_STATUS, EXAM_TYPE } from '@/db/schema'
 
-export default async function DashboardPage() {
+export default async function DashboardPage({ user }: { user: { role: string }}) {
   await getCurrentUser()
   const exams = await getExams()
 
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold">Exams</h1>
-        <Link href="/exams/new">
-          <Button>
-            <span className="flex items-center">
-              <PlusIcon size={18} className="mr-2" />
-              New Exam
-            </span>
-          </Button>
-        </Link>
+        <h1 className="text-2xl font-bold">Exams / Assessments</h1>
       </div>
 
       {exams.length > 0 ? (

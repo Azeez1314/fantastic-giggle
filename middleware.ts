@@ -1,9 +1,22 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { verifySession } from '@/lib/auth'
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // Protect admin routes
+  if (pathname.startsWith('/admin')) {
+    const user = await verifySession()
+
+    // if no user or role is not ADMIN - redirect to dashboard
+    if(!user || user.role !== 'ADMIN') {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+  }
+
   // Check if the request is for the API routes
-  if (request.nextUrl.pathname.startsWith('/api')) {
+  if (pathname.startsWith('/api')) {
     // Get the Authorization header
     const authHeader = request.headers.get('Authorization')
 
@@ -25,5 +38,5 @@ export function middleware(request: NextRequest) {
 
 // Configure the middleware to only run on API routes
 export const config = {
-  matcher: '/api/:path*',
+  matcher: ['/admin/:path*', '/api/:path*']
 }

@@ -8,7 +8,6 @@ import {
   deleteSession,
 } from '@/lib/auth'
 import { getUserByEmail } from '@/lib/dal'
-import { mockDelay } from '@/lib/utils'
 import { redirect } from 'next/navigation'
 
 // Define Zod schema for signin validation
@@ -23,6 +22,7 @@ const SignUpSchema = z
     email: z.string().min(1, 'Email is required').email('Invalid email format'),
     password: z.string().min(6, 'Password must be at least 6 characters'),
     confirmPassword: z.string().min(1, 'Please confirm your password'),
+    adminCode: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -42,7 +42,7 @@ export type ActionResponse = {
 export async function signIn(formData: FormData): Promise<ActionResponse> {
   try {
     // Add a small delay to simulate network latency
-    await mockDelay(700)
+    // await mockDelay(700)
 
     // Extract data from form
     const data = {
@@ -104,13 +104,14 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
 export async function signUp(formData: FormData): Promise<ActionResponse> {
   try {
     // Add a small delay to simulate network latency
-    await mockDelay(700)
+    // await mockDelay(700)
 
     // Extract data from form
     const data = {
       email: formData.get('email') as string,
       password: formData.get('password') as string,
       confirmPassword: formData.get('confirmPassword') as string,
+      adminCode: formData.get('adminCode') as string | undefined,
     }
 
     // Validate with Zod
@@ -135,8 +136,13 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
       }
     }
 
+    // Determine role
+    const role = data.adminCode &&  data.adminCode === process.env.ADMIN_SECRET
+      ? 'ADMIN'
+      : 'STUDENT'
+
     // Create new user
-    const user = await createUser(data.email, data.password)
+    const user = await createUser(data.email, data.password, role)
     if (!user) {
       return {
         success: false,
@@ -150,7 +156,10 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 
     return {
       success: true,
-      message: 'Account created successfully',
+      message: 
+        role === 'ADMIN'
+          ? 'Admin Account created successfully'
+          : 'Account created successfully',
     }
   } catch (error) {
     console.error('Sign up error:', error)
@@ -164,7 +173,7 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 
 export async function signOut(): Promise<void> {
   try {
-    await mockDelay(300)
+    // await mockDelay(300)
     await deleteSession()
   } catch (error) {
     console.error('Sign out error:', error)

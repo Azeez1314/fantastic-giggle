@@ -1,27 +1,27 @@
-import { getJournal } from '@/lib/dal'
+import { getExam } from '@/lib/dal'
 import { formatRelativeTime } from '@/lib/utils'
-import { Mood, Status } from '@/lib/types'
+import { Type, Status } from '@/lib/types'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Badge from '@/app/components/ui/Badge'
 import Button from '@/app/components/ui/Button'
 import { ArrowLeftIcon, Edit2Icon } from 'lucide-react'
-import DeleteJournalButton from '../../components/DeleteJournalButton'
+import DeleteExamButton from '../../components/DeleteExamButton'
 
-export default async function JournalPage({
+export default async function ExamPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const journal = await getJournal(parseInt(id))
+  const exam = await getExam(parseInt(id))
 
-  if (!journal) {
+  if (!exam) {
     notFound()
   }
 
-  const { sleepHours, note, goal, status, mood, createdAt, updatedAt, user } =
-    journal
+  const { title, q1, q2, q3, q4, q5, answer, status, type, createdAt, updatedAt, user } =
+    exam
 
   const getStatusLabel = (status: string) => {
     switch (status) {
@@ -38,18 +38,16 @@ export default async function JournalPage({
     }
   }
 
-  const getMoodLabel = (mood: string) => {
-    switch (mood) {
-      case 'happy':
-        return 'Happy'
-      case 'sad':
-        return 'Sad'
-      case 'stressed':
-        return 'Stressed'
-      case 'calm':
-        return 'Calm'
+  const getTypeLabel = (type: string) => {
+    switch (type) {
+      case 'test':
+        return 'Test'
+      case 'assessment':
+        return 'Assessment'
+      case 'exam':
+        return 'Exam'
       default:
-        return mood
+        return type
     }
   }
 
@@ -61,12 +59,12 @@ export default async function JournalPage({
           className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 mb-4"
         >
           <ArrowLeftIcon size={16} className="mr-1" />
-          Back to Journals
+          Back to Exams
         </Link>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <h1 className="text-3xl font-bold">{sleepHours}</h1>
+          <h1 className="text-3xl font-bold">{title}</h1>
           <div className="flex items-center space-x-2">
-            <Link href={`/journals/${id}/edit`}>
+            <Link href={`/exams/${id}/edit`}>
               <Button variant="outline" size="sm">
                 <span className="flex items-center">
                   <Edit2Icon size={16} className="mr-1" />
@@ -74,7 +72,7 @@ export default async function JournalPage({
                 </span>
               </Button>
             </Link>
-            <DeleteJournalButton id={parseInt(id)} />
+            <DeleteExamButton id={parseInt(id)} />
           </div>
         </div>
       </div>
@@ -82,8 +80,8 @@ export default async function JournalPage({
       <div className="bg-white dark:bg-dark-elevated border border-gray-200 dark:border-dark-border-default rounded-lg shadow-sm p-6 mb-8">
         <div className="flex flex-wrap gap-3 mb-6">
           <Badge status={status as Status}>{getStatusLabel(status)}</Badge>
-          <Badge mood={mood as Mood}>
-            {getMoodLabel(mood)}
+          <Badge type={type as Type}>
+            {getTypeLabel(type)}
           </Badge>
           <div className="text-sm text-gray-500">
             Created {formatRelativeTime(new Date(createdAt))}
@@ -95,20 +93,42 @@ export default async function JournalPage({
           )}
         </div>
 
-        {note ? (
+        {q1 ? (
           <div className="prose dark:prose-invert max-w-none">
-            <p className="whitespace-pre-line">{note}</p>
+            <p className="whitespace-pre-line">{q1}</p>
           </div>
         ) : (
-          <p className="text-gray-500 italic">No notes or thoughts provided.</p>
+          <p className="text-gray-500 italic">No questions provided.</p>
         )}
-        {goal ? (
+        {q2 ? (
           <div className="prose dark:prose-invert max-w-none">
-            <p className="whitespace-pre-line">{goal}</p>
+            <p className="whitespace-pre-line">{q2}</p>
           </div>
         ) : (
-          <p className="text-gray-500 italic">No goals provided.</p>
+          <p className="text-gray-500 italic">No questions provided.</p>
         )}
+        {q3 ? (
+          <div className="prose dark:prose-invert max-w-none">
+            <p className="whitespace-pre-line">{q3}</p>
+          </div>
+        ) : (
+          <p className="text-gray-500 italic">No questions provided.</p>
+        )}
+        {q4 ? (
+          <div className="prose dark:prose-invert max-w-none">
+            <p className="whitespace-pre-line">{q4}</p>
+          </div>
+        ) : (
+          <p className="text-gray-500 italic">No questions provided.</p>
+        )}
+        {q5 ? (
+          <div className="prose dark:prose-invert max-w-none">
+            <p className="whitespace-pre-line">{q5}</p>
+          </div>
+        ) : (
+          <p className="text-gray-500 italic">No questions provided.</p>
+        )}
+        
       </div>
 
       <div className="bg-white dark:bg-dark-elevated border border-gray-200 dark:border-dark-border-default rounded-lg shadow-sm p-6">
@@ -125,9 +145,9 @@ export default async function JournalPage({
             <Badge status={status as Status}>{getStatusLabel(status)}</Badge>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500 mb-1">Mood</p>
-            <Badge mood={mood as Mood}>
-              {getMoodLabel(mood)}
+            <p className="text-sm font-medium text-gray-500 mb-1">Type</p>
+            <Badge type={type as Type}>
+              {getTypeLabel(type)}
             </Badge>
           </div>
           <div>

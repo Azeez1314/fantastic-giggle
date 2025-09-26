@@ -3,7 +3,7 @@ import { getSession } from './auth'
 import { eq } from 'drizzle-orm'
 import { cache } from 'react'
 import { exams, users } from '@/db/schema'
-import { mockDelay } from './utils'
+// import { mockDelay } from './utils'
 import { unstable_cacheTag as cacheTag } from 'next/cache'
 
 // Current user
